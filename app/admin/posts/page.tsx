@@ -1,14 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react"; // Tambah useEffect
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { posts as initialPosts, Post } from "@/lib/content";
+import { getPosts, type Post } from "@/lib/content"; // TUKAR: posts -> getPosts
 
 export default function AdminPostsPage() {
-  const [posts, setPosts] = useState<Post[]>(initialPosts);
+  const [posts, setPosts] = useState<Post[]>([]); // Mula dengan array kosong
+  const [loading, setLoading] = useState(true);
+
+  // Tarik data live dari Supabase sebaik sahaja page dibuka
+  useEffect(() => {
+    async function loadPosts() {
+      const data = await getPosts();
+      setPosts(data);
+      setLoading(false);
+    }
+    loadPosts();
+  }, []);
 
   const handleDelete = (id: string) => {
+    // Buat masa ni kita buat filter di UI sahaja. 
+    // Nanti kita tambah logic 'delete' ke database.
     setPosts((current) => current.filter((post) => post.id !== id));
   };
 
@@ -19,8 +32,7 @@ export default function AdminPostsPage() {
           Posts
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Manage blog posts. These changes are local to this session until you connect a real
-          backend.
+          Manage blog posts live from Supabase.
         </p>
 
         <section className="mt-8 rounded-xl border border-border/50 bg-card">
@@ -33,9 +45,11 @@ export default function AdminPostsPage() {
             </Button>
           </header>
 
-          {posts.length === 0 ? (
+          {loading ? (
+            <p className="px-6 py-6 text-sm text-muted-foreground">Loading posts...</p>
+          ) : posts.length === 0 ? (
             <p className="px-6 py-6 text-sm text-muted-foreground">
-              No posts in this view. Use the dashboard to create demo posts or connect Supabase.
+              No posts found. Create one from the dashboard!
             </p>
           ) : (
             <ul className="divide-y divide-border/50">
@@ -71,7 +85,7 @@ export default function AdminPostsPage() {
                       type="button"
                       onClick={() => handleDelete(post.id)}
                     >
-                      Delete (demo)
+                      Delete
                     </Button>
                   </div>
                 </li>
@@ -83,4 +97,3 @@ export default function AdminPostsPage() {
     </main>
   );
 }
-
