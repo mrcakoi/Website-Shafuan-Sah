@@ -1,0 +1,148 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  
+  /* PENGGANTIAN FONT: Buang Geist, Ganti Inter */
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+  
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+}
+
+:root {
+  /* Light Mode - Supabase Style */
+  --background: #ffffff;
+  --foreground: #171717;
+  --card: #ffffff;
+  --card-foreground: #171717;
+  --popover: #ffffff;
+  --popover-foreground: #171717;
+  --primary: #3ecf8e;
+  --primary-foreground: #052f1a;
+  --secondary: #f8f9fa;
+  --secondary-foreground: #171717;
+  --muted: #f8f9fa;
+  --muted-foreground: #666666;
+  --accent: #3ecf8e;
+  --accent-foreground: #052f1a;
+  --destructive: #ef4444;
+  --border: #e5e7eb;
+  --input: #e5e7eb;
+  --ring: #3ecf8e;
+  --radius: 0.5rem;
+}
+
+.dark {
+  /* Dark Mode - Carbon & Architect Orange */
+  --background: #080808;
+  --foreground: #ffffff;
+  --card: #111111;
+  --card-foreground: #ffffff;
+  --popover: #111111;
+  --popover-foreground: #ffffff;
+  --primary: #f57f00;
+  --primary-foreground: #080808;
+  --secondary: #121212;
+  --secondary-foreground: #ffffff;
+  --muted: #121212;
+  --muted-foreground: rgba(255, 255, 255, 0.7);
+  --accent: #f57f00;
+  --accent-foreground: #080808;
+  --destructive: #f97373;
+  --border: #1a1a1a;
+  --input: #1a1a1a;
+  --ring: #f57f00;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  
+  html {
+    /* Paksa Inter secara global */
+    font-family: "Inter", sans-serif !important;
+    @apply antialiased;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+
+  /* Typography Industrial-Minimalist */
+  h1, h2, h3, h4 {
+    /* Letter spacing rapat (-0.05em) untuk vibe premium */
+    font-weight: 700;
+    letter-spacing: -0.05em;
+    line-height: 1.1;
+    @apply text-foreground;
+  }
+
+  p {
+    /* Body text yang bersih dan tidak terlalu terang */
+    @apply leading-relaxed text-muted-foreground;
+    letter-spacing: -0.01em;
+  }
+}
+
+@layer utilities {
+  /* Background Glow Animated */
+  .bg-glow-container {
+    @apply fixed inset-0 -z-10 overflow-hidden bg-background pointer-events-none;
+  }
+
+  .glow-blob {
+    @apply absolute rounded-full blur-[120px] opacity-20 dark:opacity-10;
+    width: 65vw;
+    height: 65vw;
+    background: radial-gradient(circle, var(--primary) 0%, transparent 75%);
+    animation: glow-move 25s infinite alternate ease-in-out;
+  }
+
+  .glow-blob-1 { top: -15%; left: -10%; }
+  .glow-blob-2 { 
+    bottom: -15%; 
+    right: -10%; 
+    animation-duration: 35s; 
+    animation-delay: -7s; 
+  }
+
+  @keyframes glow-move {
+    from { transform: translate(0, 0) rotate(0deg) scale(1); }
+    to { transform: translate(10%, 15%) rotate(10deg) scale(1.1); }
+  }
+
+  /* Efek Grain untuk texture premium */
+  .noise-overlay {
+    @apply fixed inset-0 z-0 pointer-events-none opacity-[0.025];
+    background-image: url("https://grainy-gradients.vercel.app/noise.svg");
+    filter: contrast(150%) brightness(100%);
+  }
+}
