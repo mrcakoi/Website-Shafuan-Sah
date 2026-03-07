@@ -55,7 +55,7 @@ export function SiteNav() {
           href="/"
           className="text-sm font-medium text-foreground transition-opacity hover:opacity-80"
         >
-          Content Manager
+        SHAFUAN SAH
         </Link>
         <div className="flex items-center gap-3">
           <ul className="flex items-center gap-1">

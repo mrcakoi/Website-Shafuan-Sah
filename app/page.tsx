@@ -15,10 +15,10 @@ export default function Home() {
           className="mb-4 text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground"
           aria-hidden
         >
-          Personal brand
+          SALAM
         </p>
         <h1 className="text-4xl font-light tracking-tight text-foreground sm:text-5xl md:text-6xl">
-          Content Manager
+          Shafuan Sah
         </h1>
         <p className="mt-6 max-w-md text-lg leading-relaxed text-muted-foreground">
           Curated work, writing, and projects. Minimal. Intentional.

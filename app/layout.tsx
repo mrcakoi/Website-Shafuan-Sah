@@ -16,7 +16,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Content Manager — Personal Brand",
+  title: "Shafuan Sah — Digital Nomad",
   description: "A high-end personal brand with blog, portfolio, and content management.",
 };
 
