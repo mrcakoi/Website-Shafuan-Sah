@@ -132,7 +132,7 @@ export default async function Home() {
                 </p>
               )}
               <time className="mt-4 block text-xs text-muted-foreground">
-                {highlightPost.date}
+                {highlightPost.created_at}
               </time>
             </Link>
           )}
@@ -152,7 +152,7 @@ export default async function Home() {
                       {article.title}
                     </span>
                     <time className="text-[11px] text-muted-foreground">
-                      {article.date}
+                      {article.created_at}
                     </time>
                   </Link>
                 </li>

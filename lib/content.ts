@@ -12,13 +12,15 @@ export type Project = {
   content?: string; // Tambah ini kalau kau simpan content panjang
 };
 
+// lib/content.ts
+
 export type Post = {
   id: string;
   title: string;
-  date: string;
+  created_at: string; // TUKAR: daripada 'date' kepada 'created_at'
   slug: string;
   excerpt?: string;
-  content?: string; // Tambah ini untuk isi blog
+  content?: string; 
 };
 
 // --- Fungsi Sedia Ada ---

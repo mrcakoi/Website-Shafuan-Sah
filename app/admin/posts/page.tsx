@@ -1,15 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react"; // Tambah useEffect
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { getPosts, type Post } from "@/lib/content"; // TUKAR: posts -> getPosts
+import { getPosts, type Post } from "@/lib/content";
 
 export default function AdminPostsPage() {
-  const [posts, setPosts] = useState<Post[]>([]); // Mula dengan array kosong
+  const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Tarik data live dari Supabase sebaik sahaja page dibuka
   useEffect(() => {
     async function loadPosts() {
       const data = await getPosts();
@@ -20,8 +19,7 @@ export default function AdminPostsPage() {
   }, []);
 
   const handleDelete = (id: string) => {
-    // Buat masa ni kita buat filter di UI sahaja. 
-    // Nanti kita tambah logic 'delete' ke database.
+    // Nota: Nanti kita masukkan logic API delete di sini
     setPosts((current) => current.filter((post) => post.id !== id));
   };
 
@@ -40,16 +38,22 @@ export default function AdminPostsPage() {
             <h2 className="text-sm font-medium uppercase tracking-[0.18em] text-muted-foreground">
               All posts
             </h2>
-            <Button asChild size="sm" variant="outline">
-              <Link href="/admin">Back to dashboard</Link>
-            </Button>
+            <div className="flex gap-2">
+              {/* TAMBAH: Butang ke page Create New Post */}
+              <Button asChild size="sm" className="bg-[#F57F00] hover:bg-[#D46D00] text-white">
+                <Link href="/admin/posts/new">+ Add New Post</Link>
+              </Button>
+              <Button asChild size="sm" variant="outline">
+                <Link href="/admin">Dashboard</Link>
+              </Button>
+            </div>
           </header>
 
           {loading ? (
             <p className="px-6 py-6 text-sm text-muted-foreground">Loading posts...</p>
           ) : posts.length === 0 ? (
             <p className="px-6 py-6 text-sm text-muted-foreground">
-              No posts found. Create one from the dashboard!
+              No posts found. Start writing your first story!
             </p>
           ) : (
             <ul className="divide-y divide-border/50">
@@ -64,14 +68,19 @@ export default function AdminPostsPage() {
                         {post.slug}
                       </span>
                     </div>
-                    <p className="mt-1 text-xs text-muted-foreground">
+                    <p className="mt-1 text-xs text-muted-foreground line-clamp-1">
                       {post.excerpt ?? "No excerpt provided yet."}
                     </p>
                     <time
-                      dateTime={post.date}
-                      className="mt-1 block text-xs text-muted-foreground"
+                      // TUKAR: Guna created_at sebab column date tak wujud
+                      dateTime={post.created_at} 
+                      className="mt-1 block text-[10px] text-muted-foreground uppercase tracking-wider"
                     >
-                      {post.date}
+                      {new Date(post.created_at).toLocaleDateString("en-GB", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric"
+                      })}
                     </time>
                   </div>
                   <div className="flex gap-2">
