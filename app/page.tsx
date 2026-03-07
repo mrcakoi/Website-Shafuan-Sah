@@ -18,7 +18,7 @@ export default function Home() {
           SALAM
         </p>
         <h1 className="text-4xl font-light tracking-tight text-foreground sm:text-5xl md:text-6xl">
-          Shafuan Sah
+          Shafuan
         </h1>
         <p className="mt-6 max-w-md text-lg leading-relaxed text-muted-foreground">
           Curated work, writing, and projects. Minimal. Intentional.
@@ -189,36 +189,6 @@ export default function Home() {
     </button>
   </div>
 </section>
-
-<footer className="border-t border-border/50 bg-background py-12 px-6">
-  <div className="mx-auto max-w-6xl">
-    <div className="flex flex-col justify-between gap-10 md:flex-row md:items-end">
-      {/* Branding Side */}
-      <div className="space-y-4">
-        <div className="text-xl font-bold tracking-tighter uppercase">
-          SS <span className="text-muted-foreground">//</span> SHAFUAN SAH
-        </div>
-        <p className="text-sm text-muted-foreground max-w-xs">
-          Digital Solutions Agency. Specialized in high-end content management and video editing.
-        </p>
-      </div>
-
-      {/* Social/Links Side */}
-      <div className="flex flex-wrap gap-x-8 gap-y-4 text-sm font-medium uppercase tracking-widest text-muted-foreground">
-        <a href="#" className="flex items-center gap-1 hover:text-primary transition-colors">
-          <span className="text-[10px]">🔗</span> Links
-        </a>
-        <a href="#" className="hover:text-primary transition-colors">LinkedIn</a>
-        <a href="#" className="hover:text-primary transition-colors">Github</a>
-        <a href="#" className="hover:text-primary transition-colors">Email</a>
-      </div>
-    </div>
-
-    <div className="mt-16 text-center text-[10px] uppercase tracking-[0.2em] text-muted-foreground/50">
-      © 2026 Shafuan Sah. ALL RIGHTS RESERVED.
-    </div>
-  </div>
-</footer>
     </main>
   );
 }
