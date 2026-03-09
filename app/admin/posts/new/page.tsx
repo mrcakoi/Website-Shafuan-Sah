@@ -7,13 +7,14 @@ import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase";
 import dynamic from "next/dynamic";
 
-// Kita load Editor secara dynamic sebab dia perlukan 'window' object (Client Only)
 const Editor = dynamic(() => import("@/components/editor"), { ssr: false });
 
 export default function NewPostPage() {
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
   const [excerpt, setExcerpt] = useState("");
+  const [category, setCategory] = useState(""); // State baru
+  const [tagsInput, setTagsInput] = useState(""); // State untuk input teks tags
   const [content, setContent] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -22,12 +23,19 @@ export default function NewPostPage() {
     setLoading(true);
     const supabase = createClient();
 
+    // Tukar string "Rails, Postgres" kepada array ["Rails", "Postgres"]
+    const tagsArray = tagsInput
+      ? tagsInput.split(",").map((tag) => tag.trim()).filter((tag) => tag !== "")
+      : [];
+
     const { error } = await supabase.from("posts").insert([
       {
         title,
         slug,
         excerpt,
-        content, // Data JSON dari Editor.js
+        category, // Masukkan ke DB
+        tags: tagsArray, // Masukkan array ke DB
+        content,
         created_at: new Date().toISOString(),
       },
     ]);
@@ -61,7 +69,6 @@ export default function NewPostPage() {
         </header>
 
         <div className="space-y-6">
-          {/* Input Tajuk */}
           <input
             type="text"
             placeholder="Post Title"
@@ -80,6 +87,23 @@ export default function NewPostPage() {
             />
             <input
               type="text"
+              placeholder="Category (e.g. Tutorial)"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="rounded-lg border border-border/50 bg-card px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-[#F57F00]"
+            />
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <input
+              type="text"
+              placeholder="Tags (separated by comma: Rails, Postgres)"
+              value={tagsInput}
+              onChange={(e) => setTagsInput(e.target.value)}
+              className="rounded-lg border border-border/50 bg-card px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-[#F57F00]"
+            />
+            <input
+              type="text"
               placeholder="Short excerpt..."
               value={excerpt}
               onChange={(e) => setExcerpt(e.target.value)}
@@ -89,7 +113,6 @@ export default function NewPostPage() {
 
           <hr className="border-border/50" />
 
-          {/* Block Editor Section */}
           <div className="min-h-[500px]">
             <Editor onChange={setContent} />
           </div>

@@ -105,6 +105,10 @@ export default function AdminPostsPage() {
                     <Button asChild size="sm" variant="outline">
                       <Link href={`/blog/${post.slug}`}>View</Link>
                     </Button>
+                    {/* TAMBAH BUTANG NI */}
+  <Button asChild size="sm" variant="outline">
+    <Link href={`/admin/posts/edit/${post.id}`}>Edit</Link>
+  </Button>
                     <Button
                       size="sm"
                       variant="outline"

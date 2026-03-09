@@ -1,3 +1,5 @@
+// lib/content.ts
+
 import { createClient } from "@/lib/supabase";
 
 export type Project = {
@@ -9,18 +11,19 @@ export type Project = {
   image_url?: string;
   subtitle?: string;
   tags?: string[];
-  content?: string; // Tambah ini kalau kau simpan content panjang
+  content?: string;
 };
-
-// lib/content.ts
 
 export type Post = {
   id: string;
   title: string;
-  created_at: string; // TUKAR: daripada 'date' kepada 'created_at'
+  created_at: string;
   slug: string;
   excerpt?: string;
-  content?: string; 
+  content?: string;
+  // TAMBAH DUA BARIS NI UNTUK SETELKAN ERROR
+  category?: string; 
+  tags?: string[];   
 };
 
 // --- Fungsi Sedia Ada ---
@@ -53,9 +56,8 @@ export async function getPosts() {
   return data as Post[];
 }
 
-// --- FUNGSI BARU (WAJIB TAMBAH UNTUK SETELKAN ERROR) ---
+// --- FUNGSI BARU ---
 
-// 1. Cari satu projek guna slug (untuk /portfolio/[slug])
 export async function getProjectBySlug(slug: string) {
   const supabase = createClient();
   const { data, error } = await supabase
@@ -71,7 +73,6 @@ export async function getProjectBySlug(slug: string) {
   return data as Project;
 }
 
-// 2. Cari satu blog guna slug (untuk /blog/[slug])
 export async function getPostBySlug(slug: string) {
   const supabase = createClient();
   const { data, error } = await supabase
