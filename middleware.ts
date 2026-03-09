@@ -1,30 +1,69 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import { createServerClient, type CookieOptions } from '@supabase/ssr'
+import { NextResponse, type NextRequest } from 'next/server'
 
-export function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+export async function middleware(request: NextRequest) {
+  // 1. Cipta response permulaan
+  let response = NextResponse.next({
+    request: {
+      headers: request.headers,
+    },
+  })
 
-  // Allow public routes and the login page
-  if (pathname.startsWith("/login")) {
-    return NextResponse.next();
-  }
-
-  // Protect /admin routes with a simple auth cookie set on login
-  if (pathname.startsWith("/admin")) {
-    const isLoggedIn = request.cookies.get("portfolio-auth")?.value === "1";
-
-    if (!isLoggedIn) {
-      const loginUrl = request.nextUrl.clone();
-      loginUrl.pathname = "/login";
-      loginUrl.searchParams.set("redirectTo", pathname);
-      return NextResponse.redirect(loginUrl);
+  // 2. Setup Supabase Client khusus untuk Middleware
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get(name: string) {
+          return request.cookies.get(name)?.value
+        },
+        set(name: string, value: string, options: CookieOptions) {
+          request.cookies.set({ name, value, ...options })
+          response = NextResponse.next({
+            request: {
+              headers: request.headers,
+            },
+          })
+          response.cookies.set({ name, value, ...options })
+        },
+        remove(name: string, options: CookieOptions) {
+          request.cookies.set({ name, value: '', ...options })
+          response = NextResponse.next({
+            request: {
+              headers: request.headers,
+            },
+          })
+          response.cookies.set({ name, value: '', ...options })
+        },
+      },
     }
+  )
+
+  // 3. Semak status login user secara selamat
+  const { data: { user } } = await supabase.auth.getUser()
+
+  // 4. LOGIK "PAGAR": Jika nak masuk /admin tapi tak login
+  if (!user && request.nextUrl.pathname.startsWith('/admin')) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/login'
+    return NextResponse.redirect(url)
   }
 
-  return NextResponse.next();
+  // 5. Jika dah login, tapi cuba masuk /login, hantar ke /admin
+  if (user && request.nextUrl.pathname === '/login') {
+    const url = request.nextUrl.clone()
+    url.pathname = '/admin/projects'
+    return NextResponse.redirect(url)
+  }
+
+  return response
 }
 
+// 6. Matcher: Kawasan mana yang middleware ni patut "jaga"
 export const config = {
-  matcher: ["/admin/:path*"],
-};
-
+  matcher: [
+    '/admin/:path*', 
+    '/login'
+  ],
+}

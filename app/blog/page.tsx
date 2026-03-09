@@ -1,8 +1,7 @@
 import Link from "next/link";
-import { getPosts } from "@/lib/content"; // TUKAR: Ambil fungsi, bukan variable statik
+import { getPosts } from "@/lib/content";
 
-export default async function BlogPage() { // TAMBAH: async untuk benarkan 'await'
-  // Tarik data secara live dari Supabase
+export default async function BlogPage() {
   const articles = await getPosts();
 
   return (
@@ -25,22 +24,39 @@ export default async function BlogPage() { // TAMBAH: async untuk benarkan 'awai
               <li key={article.id}>
                 <Link
                   href={`/blog/${article.slug}`}
-                  className="group flex flex-col gap-1 py-6 transition-colors sm:flex-row sm:items-baseline sm:justify-between"
+                  className="group flex flex-col gap-1 py-10 transition-colors sm:flex-row sm:items-start sm:justify-between"
                 >
                   <div className="flex-1">
-                    <span className="text-foreground transition-colors group-hover:text-[#F57F00]">
+                    <span className="text-lg font-medium text-foreground transition-colors group-hover:text-[#F57F00]">
                       {article.title}
                     </span>
                     {article.excerpt && (
-                      <p className="mt-1 text-sm text-muted-foreground line-clamp-2">
+                      <p className="mt-2 text-sm text-muted-foreground line-clamp-2 max-w-prose">
                         {article.excerpt}
                       </p>
                     )}
+                    
+                    {/* TAMBAH: Butang Read More */}
+                    <div className="mt-4 flex items-center gap-1 text-xs font-medium uppercase tracking-wider text-[#F57F00] opacity-0 transition-all group-hover:opacity-100 group-hover:translate-x-1">
+                      Read More 
+                      <svg 
+                        width="12" 
+                        height="12" 
+                        viewBox="0 0 24 24" 
+                        fill="none" 
+                        stroke="currentColor" 
+                        strokeWidth="2" 
+                        strokeLinecap="round" 
+                        strokeLinejoin="round"
+                      >
+                        <path d="M5 12h14m-7-7 7 7-7 7"/>
+                      </svg>
+                    </div>
                   </div>
+
                   <time
-                    // TUKAR: Guna created_at sebab ini yang ada dalam type Post kau
                     dateTime={article.created_at}
-                    className="mt-1 text-[11px] uppercase tracking-wider text-muted-foreground sm:mt-0 sm:ml-4"
+                    className="mt-1 text-[11px] uppercase tracking-wider text-muted-foreground sm:mt-1 sm:ml-4"
                   >
                     {new Date(article.created_at).toLocaleDateString("en-GB", {
                       day: "numeric",

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { getProjects, getPosts } from "@/lib/content"; // TUKAR: posts -> getPosts
+import { getProjects, getPosts } from "@/lib/content";
 
 export default async function Home() {
   // 1. Tarik kedua-dua data secara live dari Supabase
@@ -14,6 +14,16 @@ export default async function Home() {
   const latestPosts = allPosts.slice(0, 6);
   const highlightPost = latestPosts[0];
   const otherPosts = latestPosts.slice(1, 6);
+
+  // --- TAMBAH: Fungsi helper untuk format tarikh (8 MAR 2026) ---
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "short",
+      year: "numeric"
+    });
+  };
+  // -------------------------------------------------------------
 
   return (
     <main className="flex min-h-screen flex-col items-center px-6 pt-14 text-foreground">
@@ -131,28 +141,30 @@ export default async function Home() {
                   {highlightPost.excerpt}
                 </p>
               )}
+              {/* TUKAR: Guna fungsi helper formatDate */}
               <time className="mt-4 block text-xs text-muted-foreground">
-                {highlightPost.created_at}
+                {formatDate(highlightPost.created_at)}
               </time>
             </Link>
           )}
 
-          <div className="rounded-2xl border border-border/60 bg-card/80 p-4 shadow-sm">
-            <p className="mb-3 text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+          <div className="rounded-2xl border border-border/60 bg-card/80 p-4 shadow-sm overflow-hidden">
+            <p className="mb-3 text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground px-2">
               Recent posts
             </p>
-            <ul className="space-y-2">
+            <ul className="space-y-1.5">
               {otherPosts.map((article) => (
                 <li key={article.id}>
                   <Link
                     href={`/blog/${article.slug}`}
                     className="group flex flex-col gap-0.5 rounded-md px-2 py-1.5 transition-colors hover:bg-muted/40"
                   >
-                    <span className="text-xs font-medium group-hover:text-foreground/90">
+                    <span className="text-xs font-medium group-hover:text-foreground/90 line-clamp-1">
                       {article.title}
                     </span>
-                    <time className="text-[11px] text-muted-foreground">
-                      {article.created_at}
+                    {/* TUKAR: Guna fungsi helper formatDate dan kemaskan styling */}
+                    <time className="text-[10px] text-muted-foreground uppercase tracking-widest">
+                      {formatDate(article.created_at)}
                     </time>
                   </Link>
                 </li>
@@ -164,13 +176,13 @@ export default async function Home() {
 
       {/* CTA Section */}
       <section className="mx-auto flex max-w-4xl flex-col items-center py-24 text-center">
-        <h2 className="mb-4 text-4xl font-medium tracking-[-0.05em] md:text-6xl">
+        <h2 className="mb-4 text-4xl font-medium tracking-[-0.05em] md:text-6xl text-foreground">
           Ready to modernize?
         </h2>
         <p className="mb-10 max-w-lg text-muted-foreground">
           Let's discuss your digital transformation needs. Minimal. Intentional.
         </p>
-        <button className="rounded-full bg-[#F57F00] px-8 py-3 font-medium text-white hover:opacity-90 transition-all">
+        <button className="rounded-full bg-[#F57F00] px-8 py-3 font-medium text-white hover:opacity-90 transition-all border-none">
           Start a conversation
         </button>
       </section>

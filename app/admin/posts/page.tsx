@@ -4,10 +4,12 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { getPosts, type Post } from "@/lib/content";
+import { createClient } from "@/lib/supabase"; 
 
 export default function AdminPostsPage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
+  const supabase = createClient();
 
   useEffect(() => {
     async function loadPosts() {
@@ -18,9 +20,27 @@ export default function AdminPostsPage() {
     loadPosts();
   }, []);
 
-  const handleDelete = (id: string) => {
-    // Nota: Nanti kita masukkan logic API delete di sini
-    setPosts((current) => current.filter((post) => post.id !== id));
+  const handleDelete = async (id: string) => {
+    const confirmDelete = confirm("Serius nak padam post ni? Tindakan ni tak boleh dibatalkan.");
+    if (!confirmDelete) return;
+
+    try {
+      // 1. Padam di Supabase
+      const { error } = await supabase
+        .from("posts")
+        .delete()
+        .eq("id", id);
+
+      if (error) throw error;
+
+      // 2. Update UI secara terus
+      setPosts((current) => current.filter((post) => post.id !== id));
+      alert("Post berjaya dipadam!");
+      
+    } catch (error: any) {
+      console.error("Gagal padam:", error.message);
+      alert("Gagal padam: " + error.message);
+    }
   };
 
   return (
@@ -39,7 +59,6 @@ export default function AdminPostsPage() {
               All posts
             </h2>
             <div className="flex gap-2">
-              {/* TAMBAH: Butang ke page Create New Post */}
               <Button asChild size="sm" className="bg-[#F57F00] hover:bg-[#D46D00] text-white">
                 <Link href="/admin/posts/new">+ Add New Post</Link>
               </Button>
@@ -72,7 +91,6 @@ export default function AdminPostsPage() {
                       {post.excerpt ?? "No excerpt provided yet."}
                     </p>
                     <time
-                      // TUKAR: Guna created_at sebab column date tak wujud
                       dateTime={post.created_at} 
                       className="mt-1 block text-[10px] text-muted-foreground uppercase tracking-wider"
                     >
@@ -91,7 +109,6 @@ export default function AdminPostsPage() {
                       size="sm"
                       variant="outline"
                       className="border-destructive/60 text-destructive hover:bg-destructive hover:text-destructive-foreground"
-                      type="button"
                       onClick={() => handleDelete(post.id)}
                     >
                       Delete

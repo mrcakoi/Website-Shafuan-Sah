@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Plus, Loader2 } from "lucide-react";
+import { Plus, Loader2, Edit2, ExternalLink, Trash2 } from "lucide-react"; // Tambah icon baru
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase";
 import { Project } from "@/lib/content";
@@ -21,7 +21,6 @@ export default function AdminProjectsPage() {
   const [isAdding, setIsAdding] = useState(false);
   const [open, setOpen] = useState(false);
   
-  // 1. Tambah 'description' dalam state supaya tak error
   const [formData, setFormData] = useState({
     title: "",
     slug: "",
@@ -53,7 +52,6 @@ export default function AdminProjectsPage() {
     e.preventDefault();
     setIsAdding(true);
 
-    // Pastikan kau dah tambah kolum 'slug' dan 'category' kat Supabase!
     const { error } = await supabase
       .from("projects")
       .insert([formData]);
@@ -104,7 +102,6 @@ export default function AdminProjectsPage() {
                 </DialogDescription>
               </DialogHeader>
               <form onSubmit={handleCreate} className="space-y-4 pt-4">
-                {/* Title */}
                 <div className="space-y-1">
                   <label className="text-[10px] font-bold uppercase tracking-tighter text-muted-foreground">Title</label>
                   <input
@@ -116,7 +113,6 @@ export default function AdminProjectsPage() {
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
-                  {/* Category */}
                   <div className="space-y-1">
                     <label className="text-[10px] font-bold uppercase tracking-tighter text-muted-foreground">Category</label>
                     <input
@@ -127,7 +123,6 @@ export default function AdminProjectsPage() {
                       placeholder="e.g. Video Editing"
                     />
                   </div>
-                  {/* Slug */}
                   <div className="space-y-1">
                     <label className="text-[10px] font-bold uppercase tracking-tighter text-muted-foreground">Slug</label>
                     <input
@@ -142,7 +137,6 @@ export default function AdminProjectsPage() {
                   </div>
                 </div>
 
-                {/* Description - Textarea baru */}
                 <div className="space-y-1">
                   <label className="text-[10px] font-bold uppercase tracking-tighter text-muted-foreground">Description</label>
                   <textarea
@@ -154,7 +148,6 @@ export default function AdminProjectsPage() {
                   />
                 </div>
 
-                {/* Thumbnail */}
                 <div className="space-y-1">
                   <label className="text-[10px] font-bold uppercase tracking-tighter text-muted-foreground">Thumbnail URL</label>
                   <input
@@ -173,7 +166,6 @@ export default function AdminProjectsPage() {
           </Dialog>
         </div>
 
-        {/* Section List (Sama macam asal) */}
         <section className="mt-8 rounded-xl border border-border/50 bg-card shadow-sm overflow-hidden">
           <header className="flex items-center justify-between border-b border-border/50 px-6 py-4 bg-muted/30">
             <h2 className="text-sm font-medium uppercase tracking-[0.18em] text-muted-foreground">Live Database Content</h2>
@@ -195,9 +187,32 @@ export default function AdminProjectsPage() {
                     </div>
                     <code className="text-[10px] text-[#F57F00]/70 font-mono">/{project.slug}</code>
                   </div>
-                  <div className="flex gap-2">
-                    <Button asChild size="sm" variant="outline" className="h-8 text-xs"><Link href={`/portfolio/${project.slug}`}>View</Link></Button>
-                    <Button size="sm" variant="outline" className="h-8 text-xs border-destructive/30 text-destructive hover:bg-destructive hover:text-white" onClick={() => handleDelete(project.id)}>Delete</Button>
+                  
+                  {/* BUTTON GROUP UPDATED */}
+                  <div className="flex items-center gap-2">
+                    <Button asChild size="sm" variant="outline" className="h-8 w-8 p-0" title="View Project">
+                      <Link href={`/portfolio/${project.slug}`}>
+                        <ExternalLink className="size-3.5" />
+                      </Link>
+                    </Button>
+                    
+                    {/* INI BUTANG EDIT BARU */}
+                    <Button asChild size="sm" variant="outline" className="h-8 gap-1.5 border-blue-500/30 text-blue-500 hover:bg-blue-500/10 hover:text-blue-600">
+                      <Link href={`/admin/projects/edit/${project.id}`}>
+                        <Edit2 className="size-3.5" />
+                        <span className="text-xs">Edit</span>
+                      </Link>
+                    </Button>
+
+                    <Button 
+                      size="sm" 
+                      variant="outline" 
+                      className="h-8 w-8 p-0 border-destructive/30 text-destructive hover:bg-destructive hover:text-white" 
+                      onClick={() => handleDelete(project.id)}
+                      title="Delete Project"
+                    >
+                      <Trash2 className="size-3.5" />
+                    </Button>
                   </div>
                 </li>
               ))}
